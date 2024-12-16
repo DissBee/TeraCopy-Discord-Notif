@@ -1,18 +1,8 @@
-﻿param ($source, $target, [int64] $size, $time, [int64] $failed, [int64] $skipped)
-
-write-host "Transfer completed!"
-write-host "  Source: $source"
-write-host "  Target: $target"
-write-host "  Failed: $failed, skipped: $skipped"
-
-$fsize = "{0:N0}" -f $size
-write-host "  Size: $fsize"
-write-host "  Time: $time"
-write-host ""
-
-write-host "Sending notification..."
+param ($source, $target, [int64] $size, $time, [int64] $failed, [int64] $skipped)
 
 ######## Variables - change as needed ########
+#Size formatting
+$fsize = "{0:N0}" -f $size
 
 #Define Discord WebHook URL - paste yours here
 $DiscordHookURL = "your URL here"
@@ -31,11 +21,12 @@ Size: $fsize
 Time: $time
 "@
 
-#Send message
-
+######## SEND THE MESSAGE ########
+#create payload
 $payload = [PSCustomObject]@{
 content = $content
 }
+#do the actual send
 Invoke-RestMethod -Uri $DiscordHookURL -Method Post -Body ($payload | ConvertTo-Json) -ContentType 'Application/Json'
-
-Start-Sleep -Seconds 5
+#sleep for 2 seconds just in case
+Start-Sleep -Seconds 2
